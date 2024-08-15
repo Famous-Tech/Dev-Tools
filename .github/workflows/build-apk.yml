@@ -1,4 +1,4 @@
-name: Build my APK
+name: Build DevTools
 
 on:
   push:
@@ -35,5 +35,5 @@ jobs:
     - name: Upload APK
       uses: actions/upload-artifact@v2
       with:
-        name: myapp-apk
+        name: DevTools-apk
         path: bin/*.apk
