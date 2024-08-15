@@ -1,0 +1,26 @@
+[
+    {
+        "id": "project_1",
+        "name": "My First Project",
+        "description": "This is my first project.",
+        "code": "print('Hello, World!')",
+        "settings": {
+            "language": "Python",
+            "theme": "Dark",
+            "startup_command": "python main.py",
+            "password": "mysecretpassword"
+        }
+    },
+    {
+        "id": "project_2",
+        "name": "My Second Project",
+        "description": "This is my second project.",
+        "code": "print('Hello, Kivy!')",
+        "settings": {
+            "language": "Python",
+            "theme": "Light",
+            "startup_command": "python app.py",
+            "password": ""
+        }
+    }
+]
