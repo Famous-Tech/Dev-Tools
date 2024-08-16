@@ -1,44 +1,53 @@
 #!/bin/bash
 
-# Function to log messages
+# Function to log messages with timestamps
 log() {
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1"
 }
 
-# Function to check the last command status
-check_status() {
-    if [ $? -ne 0 ]; then
-        log "Error: $1 failed."
-        exit 1
-    fi
-}
+# Check if Buildozer is installed
+log "Checking for Buildozer..."
+if ! command -v buildozer &> /dev/null; then
+    log "Error: Buildozer is not installed. Please install it and try again."
+    exit 1
+fi
 
-# Step 1: Create the lib directory if it doesn't exist
+# Create the lib directory if it doesn't exist
 log "Creating lib directory..."
 mkdir -p lib
-check_status "Creating lib directory"
 
-# Step 2: Clean the project
-log "Cleaning the project..."
-./gradlew clean
-check_status "Project cleaning"
+# Navigate to the devtools directory
+log "Navigating to the devtools directory..."
+cd devtools || { log "Error: devtools directory not found."; exit 1; }
 
-# Step 3: Compile and build the APK
+# Clean any previous build artifacts
+log "Cleaning previous build artifacts..."
+buildozer android clean
+if [ $? -ne 0 ]; then
+    log "Error: Failed to clean previous build artifacts."
+    exit 1
+fi
+
+# Build the APK
 log "Building the APK..."
-./gradlew assembleRelease
-check_status "APK build"
+buildozer android release
+if [ $? -ne 0 ]; then
+    log "Error: APK build failed."
+    exit 1
+fi
 
-# Step 4: Move the APK to the lib directory
-log "Locating the APK..."
-APK_PATH=$(find . -type f -name "*.apk" | grep release)
+# Find and move the APK to the lib directory
+log "Moving APK to the lib directory..."
+APK_PATH=$(find . -type f -name "*.apk" | head -n 1)
 if [ -z "$APK_PATH" ]; then
     log "Error: APK not found."
     exit 1
 fi
 
-log "Moving APK to the lib directory..."
-mv "$APK_PATH" lib/
-check_status "Moving APK"
-
-# Step 5: Final confirmation
-log "APK successfully compiled and moved to the lib directory."
+mv "$APK_PATH" ../lib/
+if [ $? -eq 0 ]; then
+    log "APK successfully compiled and moved to the lib directory."
+else
+    log "Error: Failed to move APK."
+    exit 1
+fi
