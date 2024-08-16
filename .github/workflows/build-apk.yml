@@ -1,4 +1,4 @@
-name: Build DevTools
+name: Build APK
 
 on:
   push:
@@ -11,29 +11,31 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
-        python-version: '3.8'
+        python-version: '3.11'
 
-    - name: Install Buildozer
+    - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
+        pip install cython
         pip install buildozer
+        pip install python-for-android
 
-    - name: Initialize Buildozer
-      run: buildozer init
-
-    - name: Build APK
-      run: buildozer -v android debug
-
+    - name: Compile to APK
+      run: |
+        sudo apt-get install -y libzbar0  # If needed for dependencies
+        buildozer android debug
+        mkdir -p lib && mv bin/*.apk lib/
+        
     - name: Upload APK
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
-        name: DevTools-apk
-        path: bin/*.apk
+        name: DevTools
+        path: lib/*.apk
