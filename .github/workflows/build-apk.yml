@@ -11,11 +11,11 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
-      
+
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
@@ -29,26 +29,22 @@ jobs:
         pip install python-for-android
 
     - name: Accept Android SDK Licenses
-      run: |
-        yes | sdkmanager --licenses || true
-        
+      run: yes | sdkmanager --licenses || true
+
     - name: Install Android SDK Build-Tools
       run: |
         sudo apt-get update
         sudo apt-get install -y openjdk-11-jdk
         sdkmanager --install "build-tools;35.0.0" "platform-tools" "platforms;android-30"
-        
+
     - name: Compile to APK
       run: |
         sudo apt-get install -y libzbar0  # If needed for dependencies
         buildozer android debug
         mkdir -p lib && mv bin/*.apk lib/
-        
+
     - name: Upload APK
       uses: actions/upload-artifact@v3
       with:
         name: APK
         path: lib/*.apk
-pip install --upgrade buildozer
-pip install --upgrade cython
-pip install --upgrade python-for-android
