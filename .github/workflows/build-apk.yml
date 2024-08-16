@@ -38,8 +38,12 @@ jobs:
         sudo mv /usr/local/android-sdk/cmdline-tools/cmdline-tools /usr/local/android-sdk/cmdline-tools/tools
         export ANDROID_SDK_ROOT=/usr/local/android-sdk
         export PATH=$PATH:$ANDROID_SDK_ROOT/cmdline-tools/tools/bin
-        sdkmanager --sdk_root=${ANDROID_SDK_ROOT} --licenses || true
+        yes | sdkmanager --sdk_root=${ANDROID_SDK_ROOT} --licenses
         sdkmanager --sdk_root=${ANDROID_SDK_ROOT} "build-tools;35.0.0" "platform-tools" "platforms;android-30"
+
+    - name: Install Aidl
+      run: |
+        sudo apt-get install -y aidl
 
     - name: Compile to APK
       run: |
