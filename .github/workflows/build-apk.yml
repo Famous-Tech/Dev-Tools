@@ -28,14 +28,18 @@ jobs:
         pip install buildozer
         pip install python-for-android
 
-    - name: Accept Android SDK Licenses
-      run: yes | sdkmanager --licenses || true
-
-    - name: Install Android SDK Build-Tools
+    - name: Install Android SDK Command-line Tools
       run: |
         sudo apt-get update
-        sudo apt-get install -y openjdk-11-jdk
-        sdkmanager --install "build-tools;35.0.0" "platform-tools" "platforms;android-30"
+        sudo apt-get install -y wget unzip openjdk-11-jdk
+        wget https://dl.google.com/android/repository/commandlinetools-linux-8512546_latest.zip -O cmdline-tools.zip
+        sudo mkdir -p /usr/local/android-sdk/cmdline-tools
+        sudo unzip cmdline-tools.zip -d /usr/local/android-sdk/cmdline-tools
+        sudo mv /usr/local/android-sdk/cmdline-tools/cmdline-tools /usr/local/android-sdk/cmdline-tools/tools
+        export ANDROID_SDK_ROOT=/usr/local/android-sdk
+        export PATH=$PATH:$ANDROID_SDK_ROOT/cmdline-tools/tools/bin
+        sdkmanager --sdk_root=${ANDROID_SDK_ROOT} --licenses || true
+        sdkmanager --sdk_root=${ANDROID_SDK_ROOT} "build-tools;35.0.0" "platform-tools" "platforms;android-30"
 
     - name: Compile to APK
       run: |
