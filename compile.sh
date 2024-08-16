@@ -5,7 +5,7 @@ log() {
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1"
 }
 
-# Check if Buildozer is installed
+# Ensure Buildozer is installed
 log "Checking for Buildozer..."
 if ! command -v buildozer &> /dev/null; then
     log "Error: Buildozer is not installed. Please install it and try again."
@@ -14,27 +14,19 @@ fi
 
 # Create the lib directory if it doesn't exist
 log "Creating lib directory..."
-mkdir -p lib
+mkdir -p lib || { log "Error: Could not create lib directory."; exit 1; }
 
 # Navigate to the devtools directory
 log "Navigating to the devtools directory..."
 cd devtools || { log "Error: devtools directory not found."; exit 1; }
 
-# Clean any previous build artifacts
+# Clean previous build artifacts
 log "Cleaning previous build artifacts..."
-buildozer android clean
-if [ $? -ne 0 ]; then
-    log "Error: Failed to clean previous build artifacts."
-    exit 1
-fi
+buildozer android clean || { log "Error: Failed to clean previous build artifacts."; exit 1; }
 
 # Build the APK
 log "Building the APK..."
-buildozer android release
-if [ $? -ne 0 ]; then
-    log "Error: APK build failed."
-    exit 1
-fi
+buildozer android release || { log "Error: APK build failed."; exit 1; }
 
 # Find and move the APK to the lib directory
 log "Moving APK to the lib directory..."
@@ -44,10 +36,6 @@ if [ -z "$APK_PATH" ]; then
     exit 1
 fi
 
-mv "$APK_PATH" ../lib/
-if [ $? -eq 0 ]; then
-    log "APK successfully compiled and moved to the lib directory."
-else
-    log "Error: Failed to move APK."
-    exit 1
-fi
+mv "$APK_PATH" ../lib/ || { log "Error: Failed to move APK."; exit 1; }
+
+log "APK successfully compiled and moved to the lib directory."
