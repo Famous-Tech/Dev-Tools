@@ -35,8 +35,9 @@ jobs:
         wget https://dl.google.com/android/repository/commandlinetools-linux-8512546_latest.zip -O cmdline-tools.zip
         sudo mkdir -p /usr/local/android-sdk/cmdline-tools/tools
         sudo unzip cmdline-tools.zip -d /usr/local/android-sdk/cmdline-tools/tools
-        export ANDROID_SDK_ROOT=/usr/local/android-sdk
-        export PATH=$PATH:$ANDROID_SDK_ROOT/cmdline-tools/tools/bin
+        echo "ANDROID_SDK_ROOT=/usr/local/android-sdk" >> $GITHUB_ENV
+        echo "PATH=$PATH:/usr/local/android-sdk/cmdline-tools/tools/bin" >> $GITHUB_ENV
+        source $GITHUB_ENV
         mkdir -p ~/.android && touch ~/.android/repositories.cfg
         yes | sdkmanager --licenses
         yes | sdkmanager --install "build-tools;35.0.0" "platform-tools" "platforms;android-30"
@@ -52,3 +53,5 @@ jobs:
       with:
         name: APK
         path: lib/*.apk
+
+        
