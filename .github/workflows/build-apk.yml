@@ -33,13 +33,13 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y wget unzip openjdk-11-jdk aidl
         wget https://dl.google.com/android/repository/commandlinetools-linux-8512546_latest.zip -O cmdline-tools.zip
-        sudo mkdir -p /usr/local/android-sdk/cmdline-tools
-        sudo unzip cmdline-tools.zip -d /usr/local/android-sdk/cmdline-tools
-        sudo mv /usr/local/android-sdk/cmdline-tools/cmdline-tools /usr/local/android-sdk/cmdline-tools/tools
+        sudo mkdir -p /usr/local/android-sdk/cmdline-tools/tools
+        sudo unzip cmdline-tools.zip -d /usr/local/android-sdk/cmdline-tools/tools
         export ANDROID_SDK_ROOT=/usr/local/android-sdk
         export PATH=$PATH:$ANDROID_SDK_ROOT/cmdline-tools/tools/bin
-        yes | sdkmanager --sdk_root=${ANDROID_SDK_ROOT} --licenses
-        yes | sdkmanager --sdk_root=${ANDROID_SDK_ROOT} "build-tools;35.0.0" "platform-tools" "platforms;android-30"
+        mkdir -p ~/.android && touch ~/.android/repositories.cfg
+        yes | sdkmanager --licenses
+        yes | sdkmanager --install "build-tools;35.0.0" "platform-tools" "platforms;android-30"
 
     - name: Compile to APK
       run: |
