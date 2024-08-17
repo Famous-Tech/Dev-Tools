@@ -31,7 +31,7 @@ jobs:
     - name: Install Android SDK Command-line Tools
       run: |
         sudo apt-get update
-        sudo apt-get install -y wget unzip openjdk-11-jdk
+        sudo apt-get install -y wget unzip openjdk-11-jdk aidl
         wget https://dl.google.com/android/repository/commandlinetools-linux-8512546_latest.zip -O cmdline-tools.zip
         sudo mkdir -p /usr/local/android-sdk/cmdline-tools
         sudo unzip cmdline-tools.zip -d /usr/local/android-sdk/cmdline-tools
@@ -41,13 +41,9 @@ jobs:
         yes | sdkmanager --sdk_root=${ANDROID_SDK_ROOT} --licenses
         sdkmanager --sdk_root=${ANDROID_SDK_ROOT} "build-tools;35.0.0" "platform-tools" "platforms;android-30"
 
-    - name: Install Aidl
-      run: |
-        sudo apt-get install -y aidl
-
     - name: Compile to APK
       run: |
-        sudo apt-get install -y libzbar0  # If needed for dependencies
+        sudo apt-get install -y libzbar0
         buildozer android debug
         mkdir -p lib && mv bin/*.apk lib/
 
